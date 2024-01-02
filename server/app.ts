@@ -20,7 +20,7 @@ app.get('/test', (req:Request,res:Response) => {
     res.status(200).json({message:"Hello world"})
 })
 
-app.get("*", (req:Request, res:Response, next:NextFunction) => {
+app.all("*", (req:Request, res:Response, next:NextFunction) => {
     const err = new Error (`Route ${req.originalUrl} not found`) as any 
     err.statusCode = 404 
 

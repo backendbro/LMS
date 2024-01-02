@@ -8,13 +8,13 @@ import { redis } from "./redis"
 
 export const isAuthenticated = catchAsyncError(async (req:Request, res:Response, next:NextFunction) => {
   
-    const access_token = req.cookies.refresh_token
+    const access_token = req.cookies.access_token
 
     if(!access_token) {
         return next (new ErrorHandler("User is not authenticated", 404))
     }
 
-    const decoded = jwt.verify(access_token, process.env.refresh_token as Secret) as JwtPayload
+    const decoded = jwt.verify(access_token, process.env.access_token as Secret) as JwtPayload
     if(!decoded){
         return next (new ErrorHandler ("Access token is not valid", 404))
     }
