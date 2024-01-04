@@ -35,5 +35,7 @@ export const isAuthorized = (...roles:string[]) => {
         if(!roles.includes(req.user?.role || "")) {
             return next (new ErrorHandler (`Role ${req.user?.role} is not authorized to complete this action`, 404))
         }
+
+        next()
     } 
 }
