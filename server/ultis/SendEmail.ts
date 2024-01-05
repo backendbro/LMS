@@ -6,6 +6,7 @@ import path from "path"
 interface IEmailOptions {
     email:string,
     subject:string,
+    template:string
     data:{ [key:string]: any }
 }
 
@@ -20,7 +21,7 @@ const sendMail = async (options:IEmailOptions): Promise<void> => {
         }
     }) 
 
-    const {email, subject, data} = options
+    const {email, subject, template, data} = options
     const templatePath = path.join (__dirname, `../email-template/activation-mail.ejs`)
 
     const html:string = await ejs.renderFile (templatePath, data)
@@ -29,6 +30,7 @@ const sendMail = async (options:IEmailOptions): Promise<void> => {
         from:process.env.SMTP_MAIL,
         to:email,
         subject,
+        template,
         html
     }
 
