@@ -22,9 +22,11 @@ const sendMail = async (options:IEmailOptions): Promise<void> => {
     }) 
 
     const {email, subject, template, data} = options
-    const templatePath = path.join (__dirname, `../email-template/activation-mail.ejs`)
+    // const templatePath = path.join (__dirname, `../email-template/${template}`)
 
-    const html:string = await ejs.renderFile (templatePath, data)
+    // const html:string = await ejs.renderFile (templatePath, data)
+
+    const html = await ejs.renderFile(path.join(__dirname + `../email-template/${template}`), data)
 
     const mailOptions = {
         from:process.env.SMTP_MAIL,

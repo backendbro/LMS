@@ -80,6 +80,7 @@ const CourseDataSchema = new Schema<ICourseData>({
   questions: [CommentSchema],
 });
 
+
 const CourseSchema = new Schema<ICourse>({
   name: {
     type: String,

@@ -132,6 +132,7 @@ export const getAllCourses = catchAsyncError (async (req:Request, res:Response, 
 export const getCourseByUser = catchAsyncError ( async (req:Request, res:Response, next:NextFunction) => {
     try {
         const userCourseList = req.user?.courses 
+        
         const courseId = req.params.id 
         
         const courseExists = userCourseList?.find((course:any) => course._id.toString() === courseId)
@@ -203,6 +204,9 @@ interface IAddAnswerData {
 
 export const addAnswer = catchAsyncError ( async (req:Request, res:Response, next:NextFunction) => {
     try {
+
+        // check if the all users have access to this course
+
         const {answer, courseId, contentId, questionId}: IAddAnswerData = req.body
         const course = await CourseModel.findById(courseId)
         
@@ -215,17 +219,14 @@ export const addAnswer = catchAsyncError ( async (req:Request, res:Response, nex
             return next (new ErrorHandler ("Invalid content id", 400))
         }
 
-        const question =  courseContent?.questions?.find((item: any) => {
-            item._id.equals(questionId)
-        })
-
+        const question =  courseContent?.questions?.find((item: any) => item._id.equals(questionId))
         if (!question) {
             return next (new ErrorHandler ("Invalid question id", 400))
         }
 
         const newAnswer:any = {
             user:req.user,
-            answer 
+            answer  
         }
 
         question.questionReplies.push(newAnswer) 
@@ -239,7 +240,9 @@ export const addAnswer = catchAsyncError ( async (req:Request, res:Response, nex
                 title:courseContent.title 
             }
 
-            const html = await ejs.renderFile(path.join(__dirname + "../email-template/question-reply.ejs"), data)
+            console.log(data.name)
+            
+          const html = await ejs.renderFile(path.join(__dirname + "../email-template/question-reply.ejs"), data)
             
             try {
                 await sendMail({

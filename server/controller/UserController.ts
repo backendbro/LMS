@@ -49,6 +49,7 @@ export const registrationUser = catchAsyncError(async (req:Request, res:Response
             await sendMail({
                 email:user.email,
                 subject:"Activate your account",
+                template:"activation-mail.ejs",
                 data
             })
 
