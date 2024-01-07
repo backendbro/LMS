@@ -239,11 +239,8 @@ export const addAnswer = catchAsyncError ( async (req:Request, res:Response, nex
                 name:question.user.name,
                 title:courseContent.title 
             }
+         
 
-            console.log(data.name)
-            
-          const html = await ejs.renderFile(path.join(__dirname + "../email-template/question-reply.ejs"), data)
-            
             try {
                 await sendMail({
                     email:question.user.email,
@@ -270,3 +267,100 @@ export const addAnswer = catchAsyncError ( async (req:Request, res:Response, nex
     }
 }) 
 
+interface IReviewData {
+    review:string,
+    rating:number,
+    userId:string 
+}
+
+export const addReview = catchAsyncError( async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const {review, rating} = req.body as IReviewData
+        const userCourseList = req.user?.courses 
+        const courseId = req.params.id 
+
+        const courseExists = userCourseList?.some((course:any) => course._id.toString() === courseId)
+        if (!courseExists) {
+            return next (new ErrorHandler ("You are not eligible for this course", 400))
+        }
+
+        const course = await CourseModel.findById(courseId) 
+        
+        const reviewData:any = {
+            user:req.user,
+            comment:review,
+            rating 
+        }
+
+        course?.reviews.push(reviewData)
+        
+        //remember to put a cap on how much rating a user can give
+        // also ensure that user cannot add more than 1 review
+
+        let avg = 0 
+        course?.reviews.forEach((rev:any) => {
+            avg += rev.rating 
+        })
+
+        if (course) {
+            course.ratings = avg / course.reviews.length 
+        }
+
+        await course?.save()
+
+        const notification = {
+            title: "New review recieved",
+            message:`${req.user?.name} has given a review in ${course?.name}`
+        }
+
+        res.status(200).json({
+            success:true,
+            course 
+        })
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})
+
+interface IAddReviewData {
+    comment:string,
+    courseId:string,
+    reviewId:string 
+}
+
+export const addReplyToReview = catchAsyncError (async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const {comment, courseId, reviewId} = req.body as IAddReviewData 
+        const course = await CourseModel.findById(courseId)
+        
+        if (!course) {
+            return next (new ErrorHandler ("Course not found", 400))
+        }
+
+        const review = course?.reviews?.find((rev:any) => rev._id.toString() === reviewId)
+        if (!review) {
+            return next (new ErrorHandler ("Review not found", 400))
+        }
+
+        const replyData:any = {
+            user:req.user, 
+            comment 
+        }
+
+        review.commentReplies?.push(replyData)
+        await course.save()
+
+        res.status(200).json({
+            success:true,
+            course 
+        })
+
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})

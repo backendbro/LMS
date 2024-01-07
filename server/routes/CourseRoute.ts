@@ -5,6 +5,8 @@ import { isAuthenticated, isAuthorized } from "../ultis/auth"
 import { 
     addAnswer,
     addQuestions,
+    addReplyToReview,
+    addReview,
     editCourse,
     getAllCourses,
     getCourseByUser,
@@ -20,5 +22,7 @@ CourseRouter.get  ('/get-courses', getAllCourses)
 CourseRouter.get ('/get-course-content/:id', isAuthenticated, getCourseByUser)
 CourseRouter.put ('/add-question', isAuthenticated, addQuestions)
 CourseRouter.put ('/add-answer', isAuthenticated, addAnswer)
+CourseRouter.put ('/add-review/:id', isAuthenticated, addReview)
+CourseRouter.put ("/add-review-reply", isAuthenticated, isAuthorized("admin"),addReplyToReview)
 
 export default CourseRouter 

@@ -26,13 +26,12 @@ const sendMail = async (options:IEmailOptions): Promise<void> => {
 
     // const html:string = await ejs.renderFile (templatePath, data)
 
-    const html = await ejs.renderFile(path.join(__dirname + `../email-template/${template}`), data)
+    const html = await ejs.renderFile(path.join(__dirname, `../email-template/${template}`), data)
 
     const mailOptions = {
         from:process.env.SMTP_MAIL,
         to:email,
         subject,
-        template,
         html
     }
 
