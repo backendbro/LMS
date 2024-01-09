@@ -9,7 +9,8 @@ import {
     socialAuth,
     updateUserInfo,
     updatePassword,
-    updateProfilePicture
+    updateProfilePicture,
+    getAllUsers
  } from "../controller/UserController"
 
  import { isAuthenticated, isAuthorized } from "../ultis/auth"
@@ -26,5 +27,6 @@ UserRouter.post ('/social-auth', socialAuth)
 UserRouter.put ('/update-user-info', isAuthenticated, updateUserInfo)
 UserRouter.put ('/update-user-password', isAuthenticated, updatePassword)
 UserRouter.put ('/update-user-avatar', isAuthenticated, updateProfilePicture)
+UserRouter.get ("/get-users-admin", isAuthenticated, isAuthorized("admin"), getAllUsers)
 
 export default UserRouter 

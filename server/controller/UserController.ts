@@ -7,7 +7,7 @@ import jwt, {Secret, JwtPayload} from "jsonwebtoken"
 import sendMail from "../ultis/SendEmail"
 import sendToken, { accessTokenOptions, refreshTokenOptions } from "../ultis/jwt"
 import {redis} from '../ultis/redis'
-import { getUserById } from "../services/User.service"
+import { getAllUsersService, getUserById } from "../services/User.service"
 import cloudinary from "cloudinary"
 
 interface IRegistrationBody {
@@ -383,6 +383,17 @@ export const updateProfilePicture = catchAsyncError (async (req:Request, res:Res
             success:true,
             user 
         })
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})
+
+
+export const getAllUsers = catchAsyncError (async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        getAllUsersService(res)
     } catch (error) {
         if (error instanceof Error) {
             return next (new ErrorHandler (error.message, 500))

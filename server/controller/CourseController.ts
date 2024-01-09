@@ -3,7 +3,7 @@ import { catchAsyncError } from "../middleware/catchAsyncError"
 import ErrorHandler from "../ultis/ErrorHandler"
 import cloudinary from "cloudinary"
 import {
-    createCourse
+    createCourse, getAllCourseService
 } from "../services/CourseService"
 import CourseModel from "../models/CourseModel"
 import { redis } from "../ultis/redis"
@@ -374,5 +374,15 @@ export const addReplyToReview = catchAsyncError (async (req:Request, res:Respons
         if (error instanceof Error) {
             return next (new ErrorHandler (error.message, 500))
         }
+    }
+})
+
+export const getAllCoursesAdmin = catchAsyncError  ( async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        getAllCourseService(req, res, next)
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }   
     }
 })

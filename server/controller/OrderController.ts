@@ -4,7 +4,7 @@ import ErrorHandler from "../ultis/ErrorHandler";
 import OrderModel, { IOrder } from "../models/OrderModel";
 import UserModel from "../models/UserModel";
 import CourseModel from "../models/CourseModel";
-import { newOrder } from "../services/OrderService";
+import { getAllOrderService, newOrder } from "../services/OrderService";
 import ejs from "ejs"
 import path from "path"
 import sendMail from "../ultis/SendEmail";
@@ -80,6 +80,16 @@ export const createOrder = catchAsyncError (async (req:Request, res:Response, ne
         await course.save()
         newOrder(data, res, next) 
 
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})
+
+export const getAllOrderAdmin = catchAsyncError ( async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        getAllOrderService(req, res, next)
     } catch (error) {
         if (error instanceof Error) {
             return next (new ErrorHandler (error.message, 500))
