@@ -185,10 +185,10 @@
             <table style="border-bottom: 1px solid #0000002f;">
                 <tr>
                     <td>
-                        Order #: <%= order.order._id%>
+                        Order #: <%= mailData._id%>
                     </td>
                     <td>
-                        Order Date: <%= order.order.date %>
+                        Order Date: <%= mailData.date %>
                     </td>
                 </tr>
             </table>
@@ -203,16 +203,16 @@
 
             <table style="width: 90%; margin: auto; display: block;">
                 <tr>
-                    <td class="second-td"><%= order.order.name %></td>
+                    <td class="second-td"><%= mailData.name %></td>
                     <td class="second-td">1</td>
-                    <td class="second-td"><%= order.order.price%></td>
+                    <td class="second-td"><%= mailData.price%></td>
                 </tr>
             </table>
 
             <table class="table-row" style="margin-top: -20px;">
                 <tr>
                     <td class="col-2">Total: </td>
-                    <td class="col-2"> $<%= order.order.price %></td>
+                    <td class="col-2"> $<%= mailData.price %></td>
                 </tr>
             </table>
         </div>

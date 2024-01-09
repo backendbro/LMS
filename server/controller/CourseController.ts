@@ -11,6 +11,7 @@ import mongoose from "mongoose"
 import ejs from "ejs"
 import path from "path"
 import sendMail from "../ultis/SendEmail"
+import NotificationModel from "../models/NotificationModel"
 
 export const uploadCourse = catchAsyncError (async (req:Request,res:Response,next:NextFunction) => {
     try {
@@ -182,6 +183,13 @@ export const addQuestions = catchAsyncError (async (req:Request, res:Response, n
         }
         
         courseContent.questions.push(newQuestions)
+        
+        await NotificationModel.create({
+            user: req.user?._id, 
+            title:"New Question Recieved", 
+            message:`You have a new question in ${courseContent?.title}`
+        })
+        
         await course?.save()
 
         res.status(200).json({
@@ -233,7 +241,11 @@ export const addAnswer = catchAsyncError ( async (req:Request, res:Response, nex
         await course?.save() 
 
         if (req.user?.id === question.user._id) {
-            // send a notification to the owner of the questions that it has been answered
+            await NotificationModel.create ({
+                user: req.user?._id, 
+                title:"New Question Reply Received", 
+                message:`You have a new question reply in ${courseContent.title}`
+            })
         }else {
             const data = {
                 name:question.user.name,

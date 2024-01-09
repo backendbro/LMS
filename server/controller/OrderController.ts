@@ -33,7 +33,6 @@ export const createOrder = catchAsyncError (async (req:Request, res:Response, ne
         }
         
         const mailData = {
-            order:{
                 _id:course._id.toString().slice(0,6),
                 name:course.name,
                 price: course.price, 
@@ -42,7 +41,6 @@ export const createOrder = catchAsyncError (async (req:Request, res:Response, ne
                     month:"long",
                     day:"numeric"
                 })
-            }
         }
 
         const html = await ejs.renderFile(path.join(__dirname, "../email-template/order-mail.ejs"), {order: mailData})
@@ -53,7 +51,7 @@ export const createOrder = catchAsyncError (async (req:Request, res:Response, ne
                     email:user.email, 
                     subject: "Order Confirmation",
                     template:"order-mail.ejs",
-                    data:{order:mailData} 
+                    data:mailData
                 })
             }
         } catch (error) {
