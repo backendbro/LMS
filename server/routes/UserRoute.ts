@@ -10,7 +10,9 @@ import {
     updateUserInfo,
     updatePassword,
     updateProfilePicture,
-    getAllUsers
+    getAllUsers,
+    updateUserRole,
+    deleteUser
  } from "../controller/UserController"
 
  import { isAuthenticated, isAuthorized } from "../ultis/auth"
@@ -28,5 +30,7 @@ UserRouter.put ('/update-user-info', isAuthenticated, updateUserInfo)
 UserRouter.put ('/update-user-password', isAuthenticated, updatePassword)
 UserRouter.put ('/update-user-avatar', isAuthenticated, updateProfilePicture)
 UserRouter.get ("/get-users-admin", isAuthenticated, isAuthorized("admin"), getAllUsers)
+UserRouter.put ("/update-user-role", isAuthenticated, isAuthorized("admin"), updateUserRole)
+UserRouter.delete ("/delete-user/:id", isAuthenticated, isAuthorized("admin"), deleteUser)
 
 export default UserRouter 

@@ -7,6 +7,7 @@ import {
     addQuestions,
     addReplyToReview,
     addReview,
+    deleteCourse,
     editCourse,
     getAllCourses,
     getAllCoursesAdmin,
@@ -26,5 +27,6 @@ CourseRouter.put ('/add-answer', isAuthenticated, addAnswer)
 CourseRouter.put ('/add-review/:id', isAuthenticated, addReview)
 CourseRouter.put ("/add-review-reply", isAuthenticated, isAuthorized("admin"),addReplyToReview)
 CourseRouter.get ("/get-courses-admin", isAuthenticated, isAuthorized("admin"), getAllCoursesAdmin)
+CourseRouter.put ("/delete-course/:id", isAuthenticated, isAuthorized("admin"), deleteCourse)
 
 export default CourseRouter 

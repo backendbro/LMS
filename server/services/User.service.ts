@@ -1,6 +1,7 @@
 import UserModel from "../models/UserModel"
-import { Response } from "express"
+import { NextFunction, Response } from "express"
 import {redis} from '../ultis/redis'
+import ErrorHandler from "../ultis/ErrorHandler"
 
 export const getUserById = async (id:string, res:Response) => {
     //const user = await UserModel.findById(id)
@@ -20,5 +21,19 @@ export const getAllUsersService = async (res:Response) => {
     res.status(200).json({
         success:true, 
         users
+    })
+}
+
+export const updateUserRoleService = async (res:Response, id:string, role:string, next:NextFunction
+) => {
+    let user = await UserModel.findById(id)
+    if (!user) {
+        return next ( new ErrorHandler ("User does not find", 400))
+    }
+
+    user = await UserModel.findByIdAndUpdate(id, {role}, {new:true})
+    res.status(200).json({
+        success:true, 
+        user 
     })
 }

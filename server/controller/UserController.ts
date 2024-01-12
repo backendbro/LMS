@@ -7,7 +7,7 @@ import jwt, {Secret, JwtPayload} from "jsonwebtoken"
 import sendMail from "../ultis/SendEmail"
 import sendToken, { accessTokenOptions, refreshTokenOptions } from "../ultis/jwt"
 import {redis} from '../ultis/redis'
-import { getAllUsersService, getUserById } from "../services/User.service"
+import { getAllUsersService, getUserById, updateUserRoleService } from "../services/User.service"
 import cloudinary from "cloudinary"
 
 interface IRegistrationBody {
@@ -400,3 +400,38 @@ export const getAllUsers = catchAsyncError (async (req:Request, res:Response, ne
         }
     }
 })
+
+export const updateUserRole = catchAsyncError ( async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const {id, role} = req.body 
+        updateUserRoleService(res, id, role, next)
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})
+
+export const deleteUser = catchAsyncError ( async (req:Request, res:Response, next:NextFunction) => {
+    try {
+        const {id} = req.params 
+
+        const user = await UserModel.findById(id) 
+        if (!user) {
+            return next (new ErrorHandler ("User is not found", 400))
+        }
+
+        await user.deleteOne({id})
+        await redis.del(id) 
+
+        res.status(200).json({
+            success:true, 
+            message:"User deleted!"
+        })
+    } catch (error) {
+        if (error instanceof Error) {
+            return next (new ErrorHandler (error.message, 500))
+        }
+    }
+})
+
