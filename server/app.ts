@@ -12,6 +12,7 @@ import CourseRouter from "./routes/CourseRoute"
 import OrderRouter from "./routes/OrderRoute"
 import NotificationRouter from "./routes/NotificationRoute"
 import AnalyticsRouter from "./routes/AnalyticsRoute"
+import LayoutRouter from "./routes/LayoutRoute"
 
 app.use(express.json({limit:"50mb"}))
 app.use(cookieParser())
@@ -25,7 +26,8 @@ app.use('/api/v1',
     CourseRouter, 
     OrderRouter, 
     NotificationRouter,
-    AnalyticsRouter
+    AnalyticsRouter,
+    LayoutRouter
     )
 
 
