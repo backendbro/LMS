@@ -194,7 +194,7 @@ export const updateAccessToken = catchAsyncError (async (req:Request, res:Respon
 
         const session = await redis.get(decoded.id as string)
         if (!session) {
-            return next (new ErrorHandler ('Could not get access token', 404))
+            return next (new ErrorHandler ('Please login again to access this resource', 404))
         }
   
         const user = JSON.parse(session)
@@ -213,6 +213,8 @@ export const updateAccessToken = catchAsyncError (async (req:Request, res:Respon
 
         res.cookie("access_token", accessToken, accessTokenOptions)
         res.cookie("refresh_token", refreshToken, refreshTokenOptions)
+
+        await redis.set(user._id, JSON.stringify(user), 'EX', 604800)
 
         res.status(200).json({
             success:true,
